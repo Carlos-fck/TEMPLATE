@@ -1,0 +1,36 @@
+[project]
+name = "template"
+version = "0.1.0"
+description = "Production-ready Python template (boilerplate)"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+  "fastapi>=0.100.0",
+  "jinja2>=3.1.2",
+  "sqlalchemy>=2.0.0",
+  "psycopg[binary]>=3.2.0",
+  "alembic>=1.11.0",
+  "celery>=5.3.0",
+  "redis>=4.5.0",
+  "pydantic-settings>=2.0.0",
+  "python-multipart>=0.0.6",
+  "uvicorn[standard]>=0.22.0",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=7.0.0",
+  "pytest-asyncio>=0.21.0",
+  "ruff>=0.20.0",
+  "mypy>=1.9.0",
+  "pre-commit>=3.3.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.ruff]
+line-length = 88
+select = ["E", "F", "W", "C90"]
+
