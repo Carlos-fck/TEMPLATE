@@ -1,4 +1,11 @@
-from pydantic import BaseSettings, Field
+try:
+    # Prefer the standalone pydantic-settings package (Pydantic v2+)
+    from pydantic_settings import BaseSettings  # type: ignore
+except Exception:
+    # Fallback to the legacy location (pydantic.BaseSettings)
+    from pydantic import BaseSettings  # type: ignore
+
+from pydantic import Field
 
 
 class Settings(BaseSettings):
