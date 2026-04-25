@@ -1,10 +1,10 @@
 services:
   app:
-    build: .
+    build: ../../
     ports:
       - "${APP_PORT:-8000}:8000"
     env_file:
-      - .env
+      - ../../.env
     depends_on:
       - db
       - redis
@@ -18,10 +18,10 @@ services:
       - template_internal
 
   worker:
-    build: .
-    command: python -m celery -A src.app.celery_app.celery_app worker --loglevel=info --concurrency=1
+    build: ../../
+    command: celery -A src.app.celery_app.celery_app worker --loglevel=info --concurrency=1
     env_file:
-      - .env
+      - ../../.env
     depends_on:
       - redis
       - db
