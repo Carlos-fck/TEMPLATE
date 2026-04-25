@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   app:
     build: .
@@ -50,5 +48,4 @@ volumes:
 
 networks:
   template_internal:
-    name: ${COMPOSE_PROJECT_NAME:-template}_internal
     driver: bridge
