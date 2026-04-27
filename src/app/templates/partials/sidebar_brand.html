@@ -1,0 +1,10 @@
+{# Sidebar header — logo + brand name + tagline. #}
+<a href="/" class="sidebar-brand" aria-label="{{ brand.name }}">
+  {% include "partials/brand_logo.html" %}
+  <div class="sidebar-brand-text">
+    <span class="sidebar-brand-name">{{ brand.name }}</span>
+    {% if brand.tagline %}
+      <span class="sidebar-brand-tag">{{ brand.tagline }}</span>
+    {% endif %}
+  </div>
+</a>

@@ -1,0 +1,13 @@
+{# Reusable card component.
+   Usage:
+     {% call(slot) macro_card(title="My card") %}content{% endcall %}
+   Provided as include partials below for simplicity (no macros needed). #}
+<section class="card">
+  <header class="card-header">
+    <h2 class="card-title">{{ card_title }}</h2>
+    {% if card_subtitle %}<p class="card-subtitle">{{ card_subtitle }}</p>{% endif %}
+  </header>
+  <div class="card-body">
+    {{ card_body | safe }}
+  </div>
+</section>

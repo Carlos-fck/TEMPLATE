@@ -1,0 +1,33 @@
+{% extends "layouts/app.html" %}
+
+{% block content %}
+  <section class="card">
+    <header class="card-header">
+      <h2 class="card-title">Tema atual</h2>
+      <p class="card-subtitle">Edite via variáveis <code>THEME_*</code> no <code>.env</code>.</p>
+    </header>
+    <div class="card-body">
+      <div class="swatch-grid">
+        {% for name, value in [
+          ('Primary', theme.primary),
+          ('Accent', theme.accent),
+          ('Secondary', theme.secondary),
+          ('Surface', theme.surface),
+          ('Background', theme.bg),
+          ('Sidebar', theme.sidebar_bg),
+          ('Success', theme.success),
+          ('Warning', theme.warning),
+          ('Danger', theme.danger),
+        ] %}
+          <div class="swatch">
+            <span class="swatch-chip" style="background: {{ value }}"></span>
+            <div>
+              <strong>{{ name }}</strong>
+              <code>{{ value }}</code>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+{% endblock %}

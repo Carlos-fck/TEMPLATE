@@ -1,0 +1,26 @@
+{% extends "layouts/auth.html" %}
+
+{% block auth_title %}Entrar em {{ brand.name }}{% endblock %}
+
+{% block content %}
+  {% if error %}
+    <div class="flash flash-danger" role="alert">{{ error }}</div>
+  {% endif %}
+  <form method="post" action="/login" class="form" novalidate>
+    <input type="hidden" name="next" value="{{ next }}">
+    <label class="form-field">
+      <span class="form-label">Usuário</span>
+      <input class="form-input" type="text" name="username"
+             value="{{ username }}" autocomplete="username" required autofocus>
+    </label>
+    <label class="form-field">
+      <span class="form-label">Senha</span>
+      <input class="form-input" type="password" name="password"
+             autocomplete="current-password" required>
+    </label>
+    <button class="btn btn-primary btn-block" type="submit">Entrar</button>
+  </form>
+  <p class="auth-footer">
+    <small>Use as credenciais configuradas em <code>.env</code>.</small>
+  </p>
+{% endblock %}

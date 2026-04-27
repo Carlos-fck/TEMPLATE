@@ -1,0 +1,33 @@
+{% extends "layouts/app.html" %}
+
+{% block content %}
+  <div class="grid grid-cols-3">
+    <section class="card">
+      <header class="card-header"><h2 class="card-title">Bem-vindo</h2></header>
+      <div class="card-body">
+        <p>Olá, <strong>{{ user.display_name }}</strong>.</p>
+        <p class="muted">Esta é a página inicial protegida do template.</p>
+      </div>
+    </section>
+    <section class="card">
+      <header class="card-header"><h2 class="card-title">Stack</h2></header>
+      <div class="card-body">
+        <ul class="bullets">
+          <li>FastAPI + Jinja2</li>
+          <li>SQLAlchemy + Alembic</li>
+          <li>Celery + Redis</li>
+        </ul>
+      </div>
+    </section>
+    <section class="card">
+      <header class="card-header"><h2 class="card-title">Próximos passos</h2></header>
+      <div class="card-body">
+        <ol class="bullets">
+          <li>Trocar <code>BRAND_*</code> e <code>THEME_*</code> no <code>.env</code>.</li>
+          <li>Adicionar links em <code>src/app/nav.py</code>.</li>
+          <li>Criar páginas em <code>src/app/templates/pages/</code>.</li>
+        </ol>
+      </div>
+    </section>
+  </div>
+{% endblock %}

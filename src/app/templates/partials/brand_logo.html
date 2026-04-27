@@ -1,0 +1,9 @@
+{# Brand logo block. Renders an <img> when BRAND_LOGO_URL is set, otherwise
+   draws a square monogram using BRAND_SHORT. #}
+<div class="brand-logo" aria-hidden="true">
+  {% if brand.logo_url %}
+    <img src="{{ brand.logo_url }}" alt="">
+  {% else %}
+    <span class="brand-monogram">{{ brand.short or brand.name[:1] | upper }}</span>
+  {% endif %}
+</div>

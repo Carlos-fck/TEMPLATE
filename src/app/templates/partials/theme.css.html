@@ -1,0 +1,23 @@
+{# Inline <style> block exposing theme variables as CSS custom properties.
+   Edit src/app/config/settings.py (theme_*) or the .env file to recolor. #}
+<style>
+  :root {
+    --color-primary: {{ theme.primary }};
+    --color-primary-contrast: {{ theme.primary_contrast }};
+    --color-secondary: {{ theme.secondary }};
+    --color-accent: {{ theme.accent }};
+    --color-bg: {{ theme.bg }};
+    --color-surface: {{ theme.surface }};
+    --color-text: {{ theme.text }};
+    --color-text-muted: {{ theme.text_muted }};
+    --color-border: {{ theme.border }};
+    --color-sidebar-bg: {{ theme.sidebar_bg }};
+    --color-sidebar-text: {{ theme.sidebar_text }};
+    --color-sidebar-active: {{ theme.sidebar_active }};
+    --color-danger: {{ theme.danger }};
+    --color-success: {{ theme.success }};
+    --color-warning: {{ theme.warning }};
+    --radius: {{ theme.radius }};
+    --font-family: {{ theme.font }};
+  }
+</style>

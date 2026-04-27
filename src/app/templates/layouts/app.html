@@ -1,0 +1,30 @@
+{# layouts/app.html — authenticated layout with sidebar + topbar.
+   Pages that need the chrome should extend this file and only fill the
+   `content` block (and optionally `page_actions`). #}
+{% extends "base.html" %}
+
+{% block title %}{{ page_title or "Dashboard" }} · {{ brand.name }}{% endblock %}
+{% block body_class %}layout-app{% endblock %}
+
+{% block body %}
+  <div class="app-shell" data-app-shell>
+    {% include "partials/sidebar.html" %}
+    <div class="app-main">
+      {% include "partials/topbar.html" %}
+      {% include "partials/flash.html" %}
+      <main class="app-content" id="main-content">
+        <header class="page-header">
+          <div>
+            <h1 class="page-title">{% block page_title %}{{ page_title }}{% endblock %}</h1>
+            {% block page_subtitle %}{% endblock %}
+          </div>
+          <div class="page-actions">{% block page_actions %}{% endblock %}</div>
+        </header>
+        <section class="page-body">
+          {% block content %}{% endblock %}
+        </section>
+      </main>
+      {% include "partials/footer.html" %}
+    </div>
+  </div>
+{% endblock %}

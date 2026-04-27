@@ -1,13 +1,33 @@
+{# ===========================================================================
+   base.html — root HTML skeleton.
+   Every page extends a *layout* (layouts/app.html or layouts/auth.html),
+   which in turn extends this file. Pages should NOT extend base.html
+   directly so the visual chrome stays consistent.
+
+   Blocks exposed to children:
+     - title         : <title> content
+     - extra_head    : extra <link>/<meta> in <head>
+     - body_class    : extra classes on <body>
+     - body          : full <body> content (used by layouts only)
+     - extra_scripts : extra <script> tags before </body>
+   =========================================================================== #}
 <!doctype html>
-<html lang="en">
+<html lang="{{ lang | default('pt-BR') }}">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{% block title %}TEMPLATE{% endblock %}</title>
+    <meta name="color-scheme" content="light dark">
+    <title>{% block title %}{{ brand.name }}{% endblock %}</title>
+    {# Theme variables are injected as inline CSS so a project can re-skin
+       the whole UI by editing only environment variables. #}
+    {% include "partials/theme.css.html" %}
+    <link rel="stylesheet" href="{{ static_url('css/app.css') }}">
+    {% block extra_head %}{% endblock %}
   </head>
-  <body>
-    <main>
-      {% block content %}{% endblock %}
-    </main>
+  <body class="{% block body_class %}{% endblock %}">
+    {% block body %}{% endblock %}
+    <script src="{{ static_url('js/app.js') }}" defer></script>
+    {% block extra_scripts %}{% endblock %}
   </body>
 </html>
+

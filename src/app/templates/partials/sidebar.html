@@ -1,0 +1,18 @@
+{# Sidebar shell. Composed of brand header + nav. Easy to override:
+     - to change branding only:   override partials/sidebar_brand.html
+     - to change nav only:        override partials/sidebar_nav.html
+     - to add footer in sidebar:  override block sidebar_footer
+#}
+<aside class="sidebar" data-sidebar>
+  {% include "partials/sidebar_brand.html" %}
+  {% include "partials/sidebar_nav.html" %}
+  <div class="sidebar-footer">
+    {% block sidebar_footer %}
+      {% if user %}
+        <form method="post" action="/logout" class="sidebar-logout">
+          <button type="submit" class="btn btn-ghost btn-block">Sair</button>
+        </form>
+      {% endif %}
+    {% endblock %}
+  </div>
+</aside>

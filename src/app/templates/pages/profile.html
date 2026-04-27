@@ -1,0 +1,15 @@
+{% extends "layouts/app.html" %}
+
+{% block content %}
+  <section class="card">
+    <header class="card-header"><h2 class="card-title">Perfil</h2></header>
+    <div class="card-body">
+      <dl class="kv">
+        <dt>Usuário</dt><dd>{{ user.username }}</dd>
+        <dt>Nome</dt><dd>{{ user.display_name }}</dd>
+        <dt>E-mail</dt><dd>{{ user.email or '—' }}</dd>
+        <dt>Admin</dt><dd>{{ 'Sim' if user.is_admin else 'Não' }}</dd>
+      </dl>
+    </div>
+  </section>
+{% endblock %}

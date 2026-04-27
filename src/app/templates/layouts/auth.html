@@ -1,0 +1,23 @@
+{# layouts/auth.html — minimal centered layout for login/signup screens. #}
+{% extends "base.html" %}
+
+{% block title %}{{ page_title or "Entrar" }} · {{ brand.name }}{% endblock %}
+{% block body_class %}layout-auth{% endblock %}
+
+{% block body %}
+  <main class="auth-shell">
+    <div class="auth-card">
+      <header class="auth-header">
+        {% include "partials/brand_logo.html" %}
+        <h1 class="auth-title">{% block auth_title %}{{ brand.name }}{% endblock %}</h1>
+        {% if brand.tagline %}
+          <p class="auth-subtitle">{{ brand.tagline }}</p>
+        {% endif %}
+      </header>
+      {% include "partials/flash.html" %}
+      <section class="auth-body">
+        {% block content %}{% endblock %}
+      </section>
+    </div>
+  </main>
+{% endblock %}

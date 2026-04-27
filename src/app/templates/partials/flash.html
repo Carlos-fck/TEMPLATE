@@ -1,0 +1,12 @@
+{# Flash messages partial. Reads `flashes` from context (list of dicts with
+   `level` and `message`). Safe to include even when there are none. #}
+{% set _flashes = flashes | default([]) %}
+{% if _flashes %}
+  <div class="flash-stack" role="status" aria-live="polite">
+    {% for f in _flashes %}
+      <div class="flash flash-{{ f.level | default('info') }}">
+        {{ f.message }}
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}

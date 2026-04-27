@@ -1,0 +1,22 @@
+{# Data-driven nav rendered from app.nav.grouped_items() (provided via context
+   processor as `nav_groups` and `current_path`). #}
+<nav class="sidebar-nav" aria-label="Navegação principal">
+  {% for section, items in nav_groups %}
+    {% if section %}
+      <div class="sidebar-section">{{ section }}</div>
+    {% endif %}
+    <ul class="sidebar-list">
+      {% for item in items %}
+        {% set active = is_active(item, current_path) %}
+        <li>
+          <a href="{{ item.url }}"
+             class="sidebar-link {% if active %}is-active{% endif %}"
+             {% if active %}aria-current="page"{% endif %}>
+            {% include "partials/icon.html" %}
+            <span>{{ item.label }}</span>
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+  {% endfor %}
+</nav>
