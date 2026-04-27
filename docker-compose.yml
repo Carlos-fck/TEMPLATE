@@ -1,44 +1,83 @@
+# =============================================================================
+# docker-compose.yml — production-friendly stack for VPS / Coolify.
+# -----------------------------------------------------------------------------
+# Conventions:
+#   * Only the `app` service publishes a host port; `db`, `redis` and `worker`
+#     stay on the internal network. On Coolify, expose `app` via the Traefik
+#     proxy (Coolify reads the published port automatically).
+#   * `restart: unless-stopped` everywhere so containers survive reboots.
+#   * `depends_on` uses `condition: service_healthy` so the app/worker only
+#     start once the data stores accept connections.
+#   * Migrations run inside the `app` container's entrypoint when
+#     `RUN_MIGRATIONS=1` (default for `app`). The `worker` does NOT migrate
+#     to avoid races when scaled horizontally.
+# =============================================================================
+
+x-app-base: &app-base
+  build:
+    context: .
+    dockerfile: Dockerfile
+  image: ${IMAGE_NAME:-template}:${IMAGE_TAG:-latest}
+  env_file:
+    - .env
+  restart: unless-stopped
+  networks:
+    - template_internal
+
 services:
   app:
-    build: .
+    <<: *app-base
+    environment:
+      RUN_MIGRATIONS: "1"
     ports:
+      # Coolify maps this to its public proxy. Override APP_PORT in .env locally.
       - "${APP_PORT:-8000}:8000"
-    env_file:
-      - .env
     depends_on:
-      - db
-      - redis
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:8000/health || exit 1"]
+      test: ["CMD-SHELL", "curl -fsS http://localhost:8000/health || exit 1"]
       interval: 30s
-      timeout: 10s
+      timeout: 5s
       retries: 5
-      start_period: 5s
-    networks:
-      - template_internal
+      start_period: 15s
 
   worker:
-    build: .
-    command: python -m celery -A src.app.celery_app.celery_app worker --loglevel=info --concurrency=1
-    env_file:
-      - .env
+    <<: *app-base
+    command:
+      - python
+      - -m
+      - celery
+      - -A
+      - src.app.celery_app.celery_app
+      - worker
+      - --loglevel=info
+      - --concurrency=${CELERY_CONCURRENCY:-1}
+    environment:
+      RUN_MIGRATIONS: "0"
     depends_on:
-      - redis
-      - db
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     healthcheck:
-      test: ["CMD-SHELL", "ps aux | grep -v grep | grep 'celery' || exit 1"]
+      # `celery inspect ping` returns non-zero when the worker isn't responsive.
+      test:
+        - CMD-SHELL
+        - celery -A src.app.celery_app.celery_app inspect ping -d celery@$$HOSTNAME || exit 1
       interval: 30s
       timeout: 10s
       retries: 3
-      start_period: 10s
-    networks:
-      - template_internal
+      start_period: 30s
 
   redis:
     image: redis:7-alpine
     restart: unless-stopped
-    ports:
-      - "${REDIS_PORT:-6379}:6379"
+    command: ["redis-server", "--save", "60", "1", "--loglevel", "warning"]
+    volumes:
+      - redis_data:/data
     networks:
       - template_internal
     healthcheck:
@@ -50,18 +89,19 @@ services:
 
   db:
     image: postgres:17-alpine
+    restart: unless-stopped
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
       POSTGRES_DB: ${POSTGRES_DB:-template_db}
-    ports:
-      - "${POSTGRES_PORT:-5432}:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
     networks:
       - template_internal
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-template_db} || exit 1"]
+      test:
+        - CMD-SHELL
+        - pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-template_db}
       interval: 30s
       timeout: 5s
       retries: 5
@@ -69,6 +109,7 @@ services:
 
 volumes:
   pgdata:
+  redis_data:
 
 networks:
   template_internal:

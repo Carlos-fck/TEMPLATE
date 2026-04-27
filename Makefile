@@ -1,4 +1,4 @@
-.PHONY: dev test lint format migrate worker up down
+.PHONY: dev test lint format migrate worker up down build logs ps shell
 
 dev:
 	uvicorn --factory src.app.factory:create_app --reload
@@ -16,10 +16,22 @@ migrate:
 	./scripts/migrate.sh
 
 worker:
-	celery -A src.app.worker.app worker --loglevel=info
+	celery -A src.app.celery_app.celery_app worker --loglevel=info
+
+build:
+	docker compose build
 
 up:
-	docker-compose up -d --build
+	docker compose up -d --build
 
 down:
-	docker-compose down
+	docker compose down
+
+logs:
+	docker compose logs -f --tail=200
+
+ps:
+	docker compose ps
+
+shell:
+	docker compose exec app bash

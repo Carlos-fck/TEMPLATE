@@ -1,6 +1,4 @@
-from datetime import datetime
 from pathlib import Path
-from types import SimpleNamespace
 import uuid
 
 from fastapi import FastAPI, Request
@@ -16,9 +14,35 @@ from .routes.health import router as health_router
 from .routes.pages import router as pages_router
 
 
+_WEAK_SECRETS = {"", "changeme", "change-me", "secret"}
+
+
+def _validate_production_settings() -> None:
+    """Hard-fail on insecure defaults when running in production.
+
+    Coolify deployments set ENV=production via the panel; this guard catches
+    forgotten secrets early instead of silently shipping them.
+    """
+    if settings.env not in {"production", "prod"}:
+        return
+    if settings.secret_key in _WEAK_SECRETS:
+        raise RuntimeError(
+            "SECRET_KEY must be set to a strong, unique value when ENV=production."
+        )
+    if (
+        settings.admin_password in {"admin", "changeme", "change-me", ""}
+        and settings.admin_username == "admin"
+    ):
+        raise RuntimeError(
+            "Default admin credentials detected. Set ADMIN_USERNAME/ADMIN_PASSWORD "
+            "(or remove the seed) before running in production."
+        )
+
+
 def create_app() -> FastAPI:
     """Create and configure the FastAPI application instance."""
     configure_logging()
+    _validate_production_settings()
     app = FastAPI(title=settings.brand_name)
 
     base_dir = Path(__file__).parent
